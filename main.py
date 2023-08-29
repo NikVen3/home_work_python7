@@ -1,47 +1,111 @@
-
-# Напишите функцию print_operation_table(operation, num_rows=6, num_columns=6),
-# которая принимает в качестве аргумента функцию, вычисляющую элемент по номеру строки и
-# столбца. Аргументы num_rows и num_columns указывают число строк и столбцов таблицы,
-# которые должны быть распечатаны. Нумерация строк и столбцов идет с единицы (подумайте,
-# почему не с нуля). Примечание: бинарной операцией называется любая операция, у которой
-# ровно два аргумента, как, например, у операции умножения
-
-def operation_table(operation, num_rows=6, num_columns=6):
-    for i in range(1, num_rows + 1):
-        for j in range(1, num_columns + 1):
-            print(operation(i, j), end="\t")
-        print()
-print(operation_table(lambda x, y: x * y))
-
-
-
-
-# Винни-Пух попросил Вас посмотреть, есть ли в его стихах ритм. Поскольку
-# разобраться в его кричалках не настолько просто, насколько легко он их придумывает, Вам
-# стоит написать программу. Винни-Пух считает, что ритм есть, если число слогов (т.е. число
-# гласных букв) в каждой фразе стихотворения одинаковое. Фраза может состоять из одного
-# слова, если во фразе несколько слов, то они разделяются дефисами. Фразы отделяются друг
-# от друга пробелами. Стихотворение Винни-Пух вбивает в программу с клавиатуры. В ответе
-# напишите “Парам пам-пам”, если с ритмом все в порядке и “Пам парам”, если с ритмом все не
-# в порядке
+# Функция для загрузки контактов из файла
+def load_contacts(filepath):
+    try:
+        with open(filepath, "r") as file:
+            # Читаем все строки из файла
+            lines = file.readlines()
+            # Создаем словарь для хранения контактов
+            contacts = {}
+            # Обрабатываем строки из файла и добавляем контакты в словарь
+            for line in lines:
+                name, phone = line.strip().split(":")
+                contacts[name] = phone
+            return contacts
+    except FileNotFoundError:
+        # Если файл не найден, возвращаем пустой словарь
+        return {}
 
 
-# def check_rhythm(poem):
-#     words = poem.split()
-#     syllables = []
-#     for word in words:
-#         syllables.append(count_syllables(word))
-#     if len(set(syllables)) == 1:
-#         return "Парам пам-пам"
-#     else:
-#         return "Пам парам"
-# def count_syllables(word):
-#     vowels = "аеиоуыэюя"
-#     count = 0
-#     for letter in word:
-#         if letter.lower() in vowels:
-#             count += 1
-#     return count
-# poem = input("Введите стихотворение Винни-Пуха: ")
-# result = check_rhythm(poem)
-# print(result)
+# Функция для сохранения контактов в файл
+def save_contacts_to_file(filepath, contacts):
+    with open(filepath, "w") as file:
+        # Записываем в файл каждый контакт в формате "имя:номер\n"
+        for name, phone in contacts.items():
+            file.write(f"{name}:{phone}\n")
+
+
+# Функция для добавления нового контакта
+def add_contact(contacts):
+    name = input("Введите имя контакта: ")
+    phone = input("Введите номер телефона: ")
+    if name in contacts:
+        print("Контакт уже существует!")
+    else:
+        contacts[name] = phone
+        print("Контакт успешно добавлен.")
+
+
+# Функция для поиска контакта по имени
+def search_contact(contacts):
+    name = input("Введите имя контакта: ")
+    if name in contacts:
+        print(f"{name}: {contacts[name]}")
+    else:
+        print("Контакт не найден.")
+
+
+# Функция для удаления контакта
+def delete_contact(contacts):
+    name = input("Введите имя контакта: ")
+    if name in contacts:
+        del contacts[name]
+        print("Контакт успешно удален.")
+    else:
+        print("Контакт не найден.")
+
+
+# Функция для отображения всех контактов
+def show_all_contacts(contacts):
+    if len(contacts) == 0:
+        print("Телефонная книга пуста.")
+    else:
+        for name, phone in contacts.items():
+            print(f"{name}: {phone}")
+
+
+
+def main():
+
+    filepath = "data.txt"
+    contacts = load_contacts(filepath)
+
+
+    while True:
+
+        print("Телефонная книга")
+        print("================")
+        print("1. Добавить контакт")
+        print("2. Найти контакт")
+        print("3. Удалить контакт")
+        print("4. Показать все контакты")
+        print("5. Экспорт контактов в файл")
+        print("6. Выход")
+
+
+        choice = input("Введите номер действия: ")
+
+
+        if choice == "1":
+            add_contact(contacts)
+        elif choice == "2":
+            search_contact(contacts)
+        elif choice == "3":
+            delete_contact(contacts)
+        elif choice == "4":
+            show_all_contacts(contacts)
+        elif choice == "5":
+            save_contacts_to_file(filepath, contacts)
+            print("Контакты успешно сохранены.")
+        elif choice == "6":
+            save_contacts_to_file(filepath, contacts)
+            print("Контакты успешно сохранены.")
+            break
+        else:
+            print("Неправильный ввод! Попробуйте еще раз.")
+
+
+if __name__ == "__main__":
+    main()
+
+
+
